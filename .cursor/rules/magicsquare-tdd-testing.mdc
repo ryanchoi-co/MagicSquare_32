@@ -1,0 +1,72 @@
+---
+description: Dual-Track TDD Red/Green/Refactor, pytest AAA, fixtures
+globs: tests/**/*.py
+alwaysApply: false
+---
+
+# Dual-Track TDD & Testing
+
+## Tracks
+
+| Track | Tests | Notes |
+|-------|-------|-------|
+| Entity | DT-* | L0 Judge → L1 scan/missing → L2 placement → L3 solver |
+| Boundary | UT-* | DomainSolverPort **mocked only** |
+| Integration | IT-*, IT-DATA-* | After both related tracks green |
+
+## Red phase
+
+Write a **failing** test for one behavior before production code exists.
+
+- Map to DT-* / UT-* / IT-* when applicable; run pytest; expect FAILED for missing behavior.
+- One focused behavior per cycle; import/syntax ERROR only for intentional test-first stub.
+
+**Must not:** Add production code for that behavior; weaken/skip/xfail tests; proceed on typo/env/unrelated failure; proceed if test already passes without new code.
+
+## Green phase
+
+Minimum production code so the failing test passes; keep all prior tests green.
+
+- Smallest change; run full pytest for touched layer after each change.
+- Tests unchanged except minimal fixture/data fixes.
+
+**Must not:** Refactor; add features beyond the test; change expectations to match wrong code; mix refactor with green work.
+
+## Refactor phase
+
+Improve structure without changing observable behavior.
+
+- Identical assertions and contract outputs; pytest after each small step.
+- Coverage: entity ≥95%, boundary ≥85%, data ≥80% (Report/02 overrides global 80% minimum where stricter).
+
+**Must not:** Change behavior, public contracts, or golden F-OK-01; edit test expectations; drop branch coverage below baseline on touched modules.
+
+## Pytest conventions
+
+- **Pattern:** AAA (Arrange–Act–Assert)
+- **Framework:** pytest; global coverage minimum 80% unless Report/02 is stricter
+- **Naming:** `test_<layer>_<component>_<behavior>`
+
+### Fixture scope
+
+| Scope | Use |
+|-------|-----|
+| session | Rare — immutable constants (e.g. `MAGIC_CONSTANT=34`) |
+| module | Golden grids within one module (F-OK-01, A-only, B-only) |
+| function | **Default** — mutable grids; boundary mocks function-scoped |
+
+- Do not share mutable grid state across tests.
+- Document fixture IDs in `tests/fixtures/README` or docstring.
+
+### AAA
+
+- **Arrange:** grid, ports, mocks, expected vectors
+- **Act:** single call under test
+- **Assert:** one logical outcome; exact match for ERROR strings and `int[6]`
+
+### Directories
+
+- `tests/entity/` — DT-*
+- `tests/boundary/` — UT-*
+- `tests/integration/` — IT-*
+- `tests/fixtures/` — shared grids

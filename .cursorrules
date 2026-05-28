@@ -1,0 +1,10 @@
+# Magic_Square_XX — project rules migrated to .cursor/rules/
+#
+# Active rules (see Cursor Settings → Rules):
+#   .cursor/rules/magicsquare-project.mdc
+#   .cursor/rules/magicsquare-ecb-architecture.mdc
+#   .cursor/rules/magicsquare-python-code-style.mdc
+#   .cursor/rules/magicsquare-tdd-testing.mdc
+#   .cursor/rules/magicsquare-forbidden.mdc
+#
+# SSOT: Report/01, Report/02

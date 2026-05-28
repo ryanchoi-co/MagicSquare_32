@@ -1,0 +1,56 @@
+---
+description: ECB 레이어 정의, 의존 방향, 포트 규칙
+globs: src/**/*.py
+alwaysApply: false
+---
+
+# ECB Architecture
+
+**Pattern:** Entity — Control — Boundary (ECB)
+
+## Layers
+
+### Boundary
+
+- **Role:** External I/O — validates input contract (4×4, 2 empties, value range), maps `UI_ERR_*` messages, returns `int[6]` or ERROR strings; CLI/API entry.
+- **Contains:** Input validators, presenters, DomainSolverPort adapters, ERROR constants.
+- **Must not:** Domain business rules (judge, solver, scan logic).
+
+### Control
+
+- **Role:** Application / use-case orchestration — wires boundary to entity ports, coordinates solve flow without implementing domain rules.
+- **Contains:** Application services, port interfaces, transaction-less use cases.
+- **Must not:** Raw `int[][]` domain logic; direct persistence format parsing.
+
+### Entity
+
+- **Role:** Domain data and rules — Grid4x4, value objects, MagicSquareJudge, EmptyCellScanner, MissingValueFinder, PartialGridSolver.
+- **Contains:** Entities, value objects, domain services, domain exceptions.
+- **Must not:** UI strings, file I/O, framework imports.
+
+### Data
+
+- Persistence (`InMemory` / `File` repository) under `src/.../data/`.
+- Only boundary or control may call it; **entity never imports data**.
+
+## Dependency direction
+
+| Allowed | Forbidden |
+|---------|-----------|
+| boundary → control → entity | entity → boundary |
+| | entity → control |
+| | entity → data (repository) |
+
+## Ports
+
+- **DomainSolverPort:** Boundary UT-* tests mock this; no concrete entity solver import in boundary tests.
+
+## Examples
+
+```python
+# BAD — entity importing outer layer
+from magicsquare.boundary.validator import validate_grid
+
+# GOOD — entity depends only on entity packages
+from magicsquare.entity.grid import Grid4x4
+```

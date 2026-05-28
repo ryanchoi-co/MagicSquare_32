@@ -1,7 +1,7 @@
 # Magic_Square_XX
 
 4×4 **일반 마방진**을 다루는 프로그램 프로젝트입니다.  
-현재 단계는 **문제 정의(STEP 1~5)** 까지 완료되었으며, **구현은 아직 시작하지 않았습니다.**
+현재 단계는 **문제 정의(STEP 1~5)** 와 **TDD·Clean Architecture 설계(Report 02)** 까지 완료되었으며, **구현은 아직 시작하지 않았습니다.**
 
 ---
 
@@ -67,11 +67,13 @@
 
 ```
 Magic_Square_XX/
-├── README.md                                          ← 이 파일
+├── README.md
 ├── Report/
-│   └── 01.Magic_Square_Problem_Definition_Report.md   ← STEP 1~5 통합 보고서
+│   ├── 01.Magic_Square_Problem_Definition_Report.md
+│   └── 02.Magic_Square_TDD_Clean_Architecture_Design_Report.md
 └── Prompt/
-    └── 01.Magic_Square_Interactive_Prompt_Transcript.md  ← 대화형 재실행용 프롬프트
+    ├── 01.Magic_Square_Interactive_Prompt_Transcript.md
+    └── 02.Magic_Square_TDD_Design_Interactive_Prompt_Transcript.md
 ```
 
 ---
@@ -80,8 +82,10 @@ Magic_Square_XX/
 
 | 문서 | 용도 |
 |------|------|
-| [01.Magic_Square_Problem_Definition_Report.md](Report/01.Magic_Square_Problem_Definition_Report.md) | 관찰, Why #1~#3, 진짜 문제 정의, 열린 결정, 권장 다음 단계 |
-| [01.Magic_Square_Interactive_Prompt_Transcript.md](Prompt/01.Magic_Square_Interactive_Prompt_Transcript.md) | 동일한 문제 정의 워크플로를 새 세션에서 **STEP별로 재현** |
+| [01.Magic_Square_Problem_Definition_Report.md](Report/01.Magic_Square_Problem_Definition_Report.md) | 관찰, Why #1~#3, 진짜 문제 정의, 열린 결정 |
+| [02.Magic_Square_TDD_Clean_Architecture_Design_Report.md](Report/02.Magic_Square_TDD_Clean_Architecture_Design_Report.md) | Dual-Track UI+Logic, Domain/UI/Data 계약·테스트·통합 |
+| [01.Magic_Square_Interactive_Prompt_Transcript.md](Prompt/01.Magic_Square_Interactive_Prompt_Transcript.md) | 문제 정의 STEP 1~5 재실행 |
+| [02.Magic_Square_TDD_Design_Interactive_Prompt_Transcript.md](Prompt/02.Magic_Square_TDD_Design_Interactive_Prompt_Transcript.md) | TDD·CA 설계 Turn 1~3 재실행 |
 
 새 채팅에서 문제 정의만 다시 돌리려면 `Prompt/`의 MASTER 또는 Turn별 블록을 순서대로 사용하면 됩니다.
 
@@ -91,9 +95,8 @@ Magic_Square_XX/
 
 | 구분 | 상태 |
 |------|------|
-| 문제 인식 · Why · 진짜 문제 정의 | ✅ 완료 (STEP 1~5) |
-| 범위 In/Out · DoD · 픽스처 목록 | ⏳ 미작성 (STEP 6 제안) |
-| IO 계약 초안 | ⏳ 미작성 (STEP 7 제안) |
+| 문제 인식 · Why · 진짜 문제 정의 | ✅ 완료 (Report 01) |
+| TDD · Dual-Track · Clean Architecture 설계 | ✅ 완료 (Report 02) |
 | 소스 코드 · 테스트 | ❌ 없음 |
 
 ---
@@ -110,12 +113,11 @@ Magic_Square_XX/
 
 ## 권장 다음 단계
 
-1. **범위(In/Out)** 및 **Definition of Done** 문서화  
-2. **유효·무효 사례** 목록 고정 (각 최소 3종)  
-3. **입력·출력 계약** 초안 (구현 없이)  
-4. 그 다음 TDD 사이클로 구현 착수  
+1. Report 02 체크리스트: **F-OK-01** golden·A/B/both-fail 픽스처 확정  
+2. **Red** 순서대로 Domain → UI(Mock) → Data → Integration 테스트 구현  
+3. Report 02 **RG-01~06** 회귀 규칙 유지  
 
-`Prompt/` transcript에 STEP 6~7용 확장 프롬프트 초안이 포함되어 있습니다.
+`Prompt/02.*` transcript로 설계 워크플로를 새 세션에서 재실행할 수 있습니다.
 
 ---
 
@@ -125,4 +127,4 @@ Magic_Square_XX/
 
 ---
 
-*최종 문제 정의 갱신: 2026-05-28 · 보고서 `Report/01.Magic_Square_Problem_Definition_Report.md` 와 동기화*
+*최종 갱신: 2026-05-28 · Report 01·02, Prompt 01·02 동기화*

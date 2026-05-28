@@ -1,0 +1,83 @@
+---
+description: Magic Square 프로젝트 개요, SSOT, 파일 구조, AI 작업 절차
+alwaysApply: true
+---
+
+# Magic Square XX — Project
+
+## Overview
+
+- **Name:** Magic_Square_XX
+- **Purpose:** 4×4 Magic Square Dual-Track TDD practice — layer separation, contract-based tests, refactoring over algorithm difficulty.
+- **Python:** 3.10+
+
+## SSOT (read before implementing)
+
+- `Report/01.Magic_Square_Problem_Definition_Report.md`
+- `Report/02.Magic_Square_TDD_Clean_Architecture_Design_Report.md`
+
+## Problem scope
+
+| Item | Rule |
+|------|------|
+| Grid | 4×4; values 0 or 1–16; exactly 2 zeros (empty cells); no duplicate non-zero |
+| Output | `int[6] = [r1,c1,n1,r2,c2,n2]`; coordinates **1-indexed** |
+| Magic constant | 34 |
+| Scan order | Row-major (1,1) to (4,4) for empty-cell order |
+| Placement | Try A (n_small, n_large) then B; output per Report/02 |
+
+## Test tracks
+
+- **Domain:** DT-* (entity layer)
+- **Boundary:** UT-* (boundary layer; DomainSolverPort mock only)
+- **Integration:** IT-*, IT-DATA-*
+
+## Directory layout
+
+```
+Magic_Square_XX/
+├── src/magicsquare/
+│   ├── boundary/     # CLI/API, validation, ERROR strings, presenters, ports
+│   ├── control/      # Use cases, application services
+│   ├── entity/       # Grid4x4, judge, scanner, solver
+│   └── data/         # Repository; never imported by entity
+├── tests/
+│   ├── entity/       # DT-*
+│   ├── boundary/     # UT-*
+│   ├── integration/  # IT-*, IT-DATA-*
+│   └── fixtures/     # F-OK-01, A-only, B-only, both-fail
+├── Report/           # SSOT
+└── pyproject.toml
+```
+
+## AI workflow
+
+### Before writing code
+
+1. Read Report/02 for the target DT-* / UT-* / IT-* ID.
+2. Read the related test under `tests/entity/`, `tests/boundary/`, or `tests/integration/`.
+3. Confirm TDD phase (red / green / refactor) from user request or last pytest result.
+4. Identify ECB layer; do not place domain logic in boundary or control.
+
+### During writing code
+
+- Match existing package layout above.
+- Keep diffs minimal.
+- On TDD violation (production before RED, refactor in green), **STOP** and output:
+
+  ```
+  TDD RULE VIOLATION: <phase> — <what was attempted> — <required step>
+  ```
+
+### After writing code
+
+- Run pytest for the touched layer; report pass/fail counts.
+- **Red:** confirm target test failed before any prod code.
+- **Green:** confirm target test passes; no refactor-only churn.
+- **Refactor:** all tests pass; coverage not reduced.
+- Do not mark complete while any contract test or RG rule is broken.
+
+### When unclear
+
+- Prefer Report/01 and Report/02 over assumptions.
+- Ask before deleting tests, changing golden fixtures, or ERROR message strings.

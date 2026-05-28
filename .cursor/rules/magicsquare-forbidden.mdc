@@ -1,0 +1,32 @@
+---
+description: 금지 패턴 — print, 매직 넘버, 레이어 침범, 테스트 약화
+alwaysApply: true
+---
+
+# Forbidden Patterns
+
+Never use these; use the alternative instead.
+
+| Pattern | Why | Alternative |
+|---------|-----|-------------|
+| `print(...)` for debug/trace | Non-testable side effects | pytest assertions; domain/boundary exceptions |
+| Literal `34`, `136`, `16` scattered in logic | Breaks SSOT | `MagicConstant` / named constants in entity |
+| `except:` or `except Exception: pass` | Swallows RED/GREEN signal | Specific catches; map to `UI_ERR_*` at boundary only |
+| New `src/` behavior without failing test first | Violates Dual-Track TDD | Failing DT-* or UT-* → RED → minimal impl |
+| Looser asserts, skip/xfail, changed F-OK-01 golden | False green (RG-01, RG-04) | Fix production; keep golden fixed |
+| UT-* importing concrete `PartialGridSolver` | Couples contract to impl | Mock `DomainSolverPort`; use IT-* for real path |
+| `entity/` importing `boundary/`, `control/`, `data/` | Breaks ECB (RG-05) | Entity-only dependencies |
+| Boundary reshuffling n1,n2 or coords from domain `SolutionVector` | Violates UX-05, D-V2 | Return domain output verbatim after validation |
+
+## Quick checks
+
+```python
+# FORBIDDEN in entity
+from magicsquare.data.in_memory import InMemoryRepository
+
+# FORBIDDEN in boundary tests
+from magicsquare.entity.services.partial_grid_solver import PartialGridSolver
+
+# FORBIDDEN in green phase
+# rename / extract / move modules while making one test pass
+```

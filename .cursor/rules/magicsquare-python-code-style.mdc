@@ -1,0 +1,38 @@
+---
+description: Python PEP8, 타입힌트, Google docstring, 네이밍
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python Code Style
+
+- **Python:** 3.10+
+- **Style:** PEP 8 strict; Black-compatible, **max line length 88**
+- **Type hints:** Required on all function parameters and return values
+- **Docstrings:** Google style on all public methods and classes
+- **Imports:** stdlib → third-party → local; no wildcard imports
+- **Debugging:** No `print()`; use pytest assertions and exceptions
+
+## Naming
+
+| Kind | Convention | Example |
+|------|------------|---------|
+| Modules | snake_case | `magic_constant.py` |
+| Classes | PascalCase | `Grid4x4` |
+| Functions / variables | snake_case | `find_missing` |
+| Constants | UPPER_SNAKE_CASE in dedicated modules | `MAGIC_CONSTANT = 34` |
+
+## Public API example
+
+```python
+def solve_partial(grid: list[list[int]]) -> list[int]:
+    """Return placement vector for two empty cells.
+
+    Args:
+        grid: 4x4 grid with exactly two zeros.
+
+    Returns:
+        Six integers [r1, c1, n1, r2, c2, n2] (1-indexed).
+    """
+    ...
+```
