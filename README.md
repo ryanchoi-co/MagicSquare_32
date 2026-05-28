@@ -81,7 +81,7 @@ Magic_Square_XX/
 | 문서 | 용도 |
 |------|------|
 | [01.Magic_Square_Problem_Definition_Report.md](Report/01.Magic_Square_Problem_Definition_Report.md) | 관찰, Why #1~#3, 진짜 문제 정의, 열린 결정, 권장 다음 단계 |
-| [Magic_Square_Interactive_Prompt_Transcript.md](Prompt/Magic_Square_Interactive_Prompt_Transcript.md) | 동일한 문제 정의 워크플로를 새 세션에서 **STEP별로 재현** |
+| [01.Magic_Square_Interactive_Prompt_Transcript.md](Prompt/01.Magic_Square_Interactive_Prompt_Transcript.md) | 동일한 문제 정의 워크플로를 새 세션에서 **STEP별로 재현** |
 
 새 채팅에서 문제 정의만 다시 돌리려면 `Prompt/`의 MASTER 또는 Turn별 블록을 순서대로 사용하면 됩니다.
 
