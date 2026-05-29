@@ -265,30 +265,42 @@ pytest -m golden_master -v
 ### REFACTOR · ECB 분리 계획
 
 > **기준:** `.cursor/rules/magicsquare-tdd-testing.mdc` REFACTOR phase — 동작·계약(E001~E007, int[6], F-OK-01, ERROR 문자열) 불변, pytest GREEN, 커버리지 미감소.  
-> **순번 1~6:** GREEN 선행(신규 구현·테스트) · **순번 7~18:** GREEN 후 REFACTOR.
+> **3그룹:** **A** 레이어 신설(GREEN) → **B** 역할 분리(REFACTOR) → **C** SSOT·품질 (B와 병행 가능; C-16은 Entity GREEN 후).
 
-#### 리팩토링 대상 목록 (우선순위 순)
+#### 리팩토링 To-Do (3그룹 · 순번 1~18)
 
-| 순번 | 대상 파일 | 문제 | 적용 기법 | 우선순위 |
-|------|-----------|------|-----------|----------|
-| 1 | `pyproject.toml` | pydantic이 `[dev]`/`[gui]`에만 있어 boundary DTO import 실패 | Dependency 정리 — core `dependencies` 이동 또는 stdlib 대체 | **P0 (선행)** |
-| 2 | `boundary/input_validator.py` *(신규)* | E002~E005 미구현; 검증이 orchestrator/grid_io/grid_panel에 3중 분산 | Extract Class — E001~E005 단일 SSOT | **P0** |
-| 3 | `boundary/ui_boundary.py` *(신규)* | U-OUT/U-FLOW facade 부재; Screen이 orchestrator 직접 호출 | Facade — validate→port→envelope; `NotImplementedError` 제거 | **P0** |
-| 4 | `boundary/presenter.py` | E001→`UI_ERR_NOT_4X4`·E006/E007 매핑 미구현 | Extract Method / SSOT constants | **P0** |
-| 5 | `control/solve_partial_magic_square.py` *(신규)* | Control layer 공백 | Use Case Extract — locate→find→solve 오케스트레이션만 | **P0** |
-| 6 | `entity/services/partial_grid_solver.py` *(신규)* | D-SOL RED; GM `reference.py`와 알고리즘 이중화 | Move Method — Step A/B·int[6]·judge를 Entity로 | **P0** |
-| 7 | `boundary/orchestrator.py` | 검증+DTO+`NotImplementedError` 혼재 | Facade 위임 후 역할 축소 또는 제거 | **P0 (REFACTOR)** |
-| 8 | `boundary/screen/main_window.py` | UI+submit+port stub+demo override; UI 비즈니스 판단(157–160, 170–172) | Thin Screen — `UIBoundary`·presenter만 | **P0 (REFACTOR)** |
-| 9 | `boundary/screen/grid_io.py` | parse+범위·size 검증 혼재 | Separate Concerns — parse만 유지 | **P1** |
-| 10 | `boundary/screen/grid_panel.py` | UI+size 검증+BV demo 주입 | Extract Method — 검증 제거 | **P1** |
-| 11 | `boundary/error_codes.py` *(신규)* | `INVALID_SIZE`/message가 conftest와 이중 SSOT | SSOT Module | **P1** |
-| 12 | `boundary/screen/demo_grids.py` | conftest와 fixture 3중 SSOT | Move Fixture → `tests/fixtures/` | **P1** |
-| 13 | `boundary/dto.py` | failure DTO만; success/pending 없음 | Introduce DTO | **P1** |
-| 14 | `boundary/ports.py` | `resolve` 반환 `Any` | Replace Type | **P2** |
-| 15 | `entity/user.py` | 데이터+검증 동시 (격자 AC와 무관) | 유지 또는 Extract Validator (선택) | **P2** |
-| 16 | `tests/golden_master/capture.py` | reference solver만 검증 (prod 미경유) | Adapter Switch — Entity GREEN 후 | **P1 (GREEN 후)** |
-| 17 | `boundary/orchestrator.py` | ValidationFailureResult 5회 중복·26줄 함수 | Extract Method | **P2** |
-| 18 | `boundary/screen/main_window.py` | `__init__`/`_on_submit` 20줄+ | Extract Method — UI 조립 분리 | **P2** |
+##### 그룹 A — 레이어 신설 · GREEN 선행 (순번 1~6)
+
+ECB 빈 공간을 채우고 검증·유스케이스·솔버를 올바른 레이어에 **신규** 구현. RED→GREEN 선행.
+
+- [ ] **A-1 · #1 · P0** `pyproject.toml` — pydantic `[dev]`/`[gui]` only → core `dependencies` 이동 또는 stdlib 대체
+- [ ] **A-2 · #2 · P0** `boundary/input_validator.py` *(신규)* — E001~E005 단일 SSOT (Extract Class); orchestrator/grid_io/grid_panel 3중 검증 해소
+- [ ] **A-3 · #3 · P0** `boundary/ui_boundary.py` *(신규)* — validate→port→envelope Facade; Screen orchestrator 직접 호출·`NotImplementedError` 제거
+- [ ] **A-4 · #4 · P0** `boundary/presenter.py` — E001→`UI_ERR_NOT_4X4`·E006/E007 매핑 (Extract Method / SSOT constants)
+- [ ] **A-5 · #5 · P0** `control/solve_partial_magic_square.py` *(신규)* — locate→find→solve Use Case (Control layer)
+- [ ] **A-6 · #6 · P0** `entity/services/partial_grid_solver.py` *(신규)* — Step A/B·int[6]·judge Entity 이동; GM `reference.py` 이중화 해소
+
+##### 그룹 B — 기존 코드 역할 분리 · ECB REFACTOR (순번 7~10, 17~18)
+
+그룹 A GREEN 후. orchestrator·Screen에 흩어진 검증·비즈니스 판단을 A 모듈로 위임하고 얇게.
+
+- [ ] **B-1 · #7 · P0** `boundary/orchestrator.py` — Facade 위임 후 역할 축소 또는 제거 (검증+DTO+`NotImplementedError` 혼재 해소)
+- [ ] **B-2 · #8 · P0** `boundary/screen/main_window.py` — Thin Screen (`UIBoundary`·presenter만); UI 비즈니스 판단(157–160, 170–172) 제거
+- [ ] **B-3 · #9 · P1** `boundary/screen/grid_io.py` — parse만 유지 (Separate Concerns; size·범위 검증 제거)
+- [ ] **B-4 · #10 · P1** `boundary/screen/grid_panel.py` — UI 전용; size 검증·BV demo 주입 제거 (Extract Method)
+- [ ] **B-5 · #17 · P2** `boundary/orchestrator.py` — ValidationFailureResult 5회 중복·26줄 함수 분리 (Extract Method)
+- [ ] **B-6 · #18 · P2** `boundary/screen/main_window.py` — `__init__`/`_on_submit` UI 조립 분리 (Extract Method)
+
+##### 그룹 C — SSOT · 계약 · 품질 정비 (순번 11~16)
+
+상수·픽스처·DTO·타입·GM 경로를 SSOT로 맞추고 계약 품질 향상. **C-6(#16)** 은 Entity GREEN 후.
+
+- [ ] **C-1 · #11 · P1** `boundary/error_codes.py` *(신규)* — `INVALID_SIZE`/message SSOT Module (conftest 이중화 해소)
+- [ ] **C-2 · #12 · P1** `boundary/screen/demo_grids.py` — fixture를 `tests/fixtures/`로 이동 (3중 SSOT 해소)
+- [ ] **C-3 · #13 · P1** `boundary/dto.py` — success/pending DTO 추가 (Introduce DTO)
+- [ ] **C-4 · #14 · P2** `boundary/ports.py` — `resolve` 반환 `Any` → 명시적 타입 (Replace Type)
+- [ ] **C-5 · #15 · P2** `entity/user.py` — 유지 또는 Extract Validator *(선택; 격자 AC와 무관)*
+- [ ] **C-6 · #16 · P1** `tests/golden_master/capture.py` — prod 경유 Adapter Switch (reference solver only → Entity GREEN 후)
 
 #### 테스트 선행 필요 항목
 
@@ -342,7 +354,7 @@ python -m pytest tests/ --cov=src/magicsquare/boundary --cov=src/magicsquare/ent
 | ECB 의존 | `entity` → `boundary\|control\|data` import 없음; Screen → Entity/Control 직접 호출 없음 |
 | DT-USER | `test_entity_user.py` 9건 GREEN |
 
-**실행 순서:** P0 pydantic → P0 input_validator + ui_boundary + presenter GREEN → P0 Control + Entity GREEN → P0 Screen/orchestrator REFACTOR → P1 SSOT·fixture → P2 타입·함수 분리.
+**실행 순서:** **그룹 A** (pydantic → input_validator + ui_boundary + presenter → Control + Entity) → **그룹 B** (orchestrator·Screen REFACTOR) → **그룹 C** (SSOT·fixture·DTO·타입; #16 Entity GREEN 후).
 
 ### 커버리지 목표
 
@@ -377,11 +389,10 @@ python -m pytest tests/ --cov=src/magicsquare/boundary --cov=src/magicsquare/ent
 
 ## 권장 다음 단계
 
-1. **P0 선행:** `pyproject.toml` pydantic core 의존성 정리  
-2. **Phase 2 GREEN:** U-IN/U-OUT/U-FLOW skeleton → `input_validator` + `ui_boundary`  
-3. **Phase 3 GREEN:** Entity D-VAL~D-SOL + Control `solve_partial_magic_square`  
-4. **REFACTOR:** [REFACTOR · ECB 분리 계획](#refactor--ecb-분리-계획) RF-01~05 충족 후 Screen/orchestrator 분리  
-5. Report 02 **RG-01~06** 회귀 규칙 유지 (golden·assert 완화 금지)  
+1. **그룹 A:** `pyproject.toml` pydantic → Phase 2/3 GREEN → `input_validator` + `ui_boundary` + presenter + Control + Entity  
+2. **그룹 B:** [REFACTOR · ECB 분리 계획](#refactor--ecb-분리-계획) RF-01~05 충족 후 orchestrator·Screen 역할 분리  
+3. **그룹 C:** error_codes·fixture·DTO·ports 타입·GM prod 연동 (#16)  
+4. Report 02 **RG-01~06** 회귀 규칙 유지 (golden·assert 완화 금지)  
 
 ---
 
@@ -391,4 +402,4 @@ python -m pytest tests/ --cov=src/magicsquare/boundary --cov=src/magicsquare/ent
 
 ---
 
-*최종 갱신: 2026-05-29 · REFACTOR·ECB 분석 Report/15 · Prompt/19 · README REFACTOR 계획*
+*최종 갱신: 2026-05-29 · REFACTOR·ECB 3그룹 To-Do · Report/15 · Prompt/19*
