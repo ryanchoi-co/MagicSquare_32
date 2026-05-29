@@ -25,6 +25,41 @@
 
 ---
 
+## KPT 회고 요약 (Magic_Square_XX)
+
+### Keep
+- Dual-Track 병렬 설계
+- 작은 단위 GREEN · 테스트 통과 후 커밋
+- 설계서(SSOT) 선행
+- 보고서 + AI 대화 기록 보관
+- ECB 책임 분리 유지
+- Golden Master 구축
+- Cursor 규칙 · AI 코드 리뷰 활용
+- Cursor Ask 모드 활용
+- pytest로 완료 확인
+
+### Problem
+- RED → GREEN → 리팩터 경계 혼용
+- 리팩터 조기 착수 (테스트 미통과 상태)
+- 프롬프트 엔지니어링 부족
+- AI 제안 검증 능력 미흡
+- 문서·코드·테스트 불일치
+- 커버리지 목표 미달
+- ECB 레이어 책임 혼재
+- 공통 프롬프트·경로 혼선
+
+### Try
+- 테스트 단계 프롬프트에 명시
+- AC·테스트 ID 명시 관행 강화
+- GM approve 절차 문서화
+- 경계 테스트 Mock만 사용 (구현체 직접 연결 금지)
+- 상수·에러 메시지 SSOT 선행 정의
+- 리팩터 전 Phase 0 Gate 체크리스트
+- 공통 프롬프트 템플릿 공유
+- Ask 모드 규칙 문서화
+
+---
+
 # Part A: 회고 세션 진행 가이드
 
 ## A.1 세션 목표
@@ -63,125 +98,73 @@
 
 ---
 
-## A.5 KPT 회고 — 진행 질문 & 프로젝트 사례
+## A.5 KPT 회고
 
-> **진행 방법:** 각 섹션마다 (1) 진행자가 질문을 읽고 2분 침묵 작성 → (2) 라운드로빈 공유 → (3) 클러스터링 → (4) 투표.  
-> 아래 **「프로젝트 사례」** 는 Magic_Square_XX 실제 경험 예시이며, 세션에서 그대로 쓰거나 수정·보완한다.
+> **진행 방법:** 질문 1개씩 읽기 → 2분 개인 메모 → 돌아가며 공유 → 비슷한 항목 묶기 → 중요한 것 3~5개 투표.  
+> 아래 목록은 **Magic_Square_XX** 회고 초안이다. 세션에서 추가·삭제·수정한다.
 
----
+### 회고 때 물어볼 질문 (간단版)
 
-### Keep — 계속 유지할 것들
-
-#### 진행 질문 (팀에 던질 질문)
-
-| # | 질문 |
-|---|------|
-| K1 | **무엇이 잘 되었는가?** (기술·프로세스·협업·AI 사용 중 1가지 이상) |
-| K2 | **어떤 관행을 계속 유지해야 하는가?** (다음 스프린트에도 그대로 둘 것) |
-| K3 | **팀에게 도움이 된 것들은?** (문서·도구·역할·규칙·의사결정 방식) |
-
-#### 기록 템플릿 (세션 중 작성)
-
-| Keep 항목 | 근거(Report/Test/PR) | 유지 이유 | 담당 확인 |
-|-----------|----------------------|-----------|-----------|
-| *(예시)* SSOT Report/02 + Test ID 인용 프롬프트 | Report/10~12, Prompt/14~16 | 추측 구현·False Green 감소 | ☐ 전원 |
-| | | | |
-| | | | |
-
-#### 프로젝트 사례 (Magic_Square_XX — Keep 후보)
-
-| Keep | 잘 된 점 | 유지할 관행 | 팀에 도움 된 점 |
-|------|----------|-------------|-----------------|
-| **SSOT 선행** | Report/01·02 기준 DT-*/UT-*/BV·ERROR 문자 인용 | 프롬프트 1행에 SSOT 링크 | 테스트·문서·AI 출력 정합 |
-| **TDD Phase 명시** | RED→GREEN→REFACTOR·Ask 구분 | 세션 제목에 phase 표기 | 분석 세션에서 code 미수정 |
-| **점진 GREEN** | AC-FR-01-01 **33/33** (G-01~G-05) | BV 단위·최소 diff | Phase 1 DoD 달성 |
-| **Report + Transcript** | Report/05 이후 07~22 쌍 보존 | 세션 종료 Export 필수 | 결정 근거 재현 |
-| **서브에이전트** | code-reviewer → 계획 → 구현 | REFACTOR 전 리뷰 선행 | “한 번에 다 고침” 방지 |
-| **Golden Master** | GM 6/6 회귀 안전장치 | REFACTOR 전 GM 통과 | row-major·1-index·ERROR 계약 보호 |
-| **금지 규칙** | `.cursor/rules/magicsquare-forbidden.mdc` | RG-01~05 매 PR 체크 | literal 34·golden 변경 방지 |
-| **Exit criteria** | `pytest -q` 수치를 Done when에 명시 | AI “완료” = exit code | Report/17 Step 0 실측 문화 |
+| 구분 | 질문 |
+|------|------|
+| **Keep** | 뭐가 잘 됐나? · 뭘 계속 할까? · 팀에 뭐가 도움이 됐나? |
+| **Problem** | 뭐가 막혔나? · 뭐 때문에 느렸나? · 어떤 방식이 비효율적이었나? |
+| **Try** | 다음엔 뭐를 바꿀까? · 뭘 새로 써볼까? · 짧게 실험해볼 건? |
 
 ---
 
-### Problem — 문제점들
+### Keep — 계속 유지할 것
 
-#### 진행 질문
+- Dual-Track 병렬 설계 (도메인 테스트 · 경계 테스트 나눠서 진행)
+- 작은 단위로 GREEN (한 번에 하나씩, 테스트 통과 확인 후 커밋)
+- 설계서·테스트 계획을 먼저 보고 작업 (SSOT)
+- 작업 후 보고서 + AI 대화 기록 남기기
+- ECB 책임 분리 유지 (화면 / 검증 / 비즈니스 로직 나누기)
+- Golden Master로 결과값 회귀 방지
+- Cursor 규칙·코드 리뷰 AI 역할 활용
+- Cursor Ask 모드로 “분석만” 하는 세션 구분
+- pytest로 완료 여부 확인 (AI 말만 믿지 않기)
 
-| # | 질문 |
-|---|------|
-| P1 | **어떤 장애물이 있었는가?** (기술·도구·커뮤니케이션·지식 격차) |
-| P2 | **무엇이 팀을 느리게 했는가?** (되돌리기·재작업·검색·대기) |
-| P3 | **어떤 프로세스가 비효율적이었는가?** (TDD·리뷰·문서·AI 프롬프트·Git) |
-
-#### 기록 템플릿
-
-| Problem | 장애물 유형 | 느려진 구간 | 비효율 프로세스 | 영향(정량 가능 시) |
-|---------|-------------|-------------|-----------------|-------------------|
-| *(예시)* Phase 미명시 REFACTOR 시도 | 프로세스 | Step 0 RED 23 확인 후 중단 | TDD phase 생략 | 1세션 낭비 |
-| | | | | |
-
-#### 프로젝트 사례 (Problem 후보)
-
-| Problem | 장애물 | 느린 원인 | 비효율 프로세스 |
-|---------|--------|-----------|----------------|
-| **프롬프트 비구조화** | 목표·금지·Done when 혼재 | 초기 탐색 턴 증가 (`Prompt/01~03`) | “대화형”만으로 구현 지시 |
-| **템플릿 드리프트** | 타 프로젝트 예시 잔존 | `Prompt/05` Refrigerator 혼선 | 공통 Prompt 미정리 |
-| **경로·ID 불일치** | GM 파일 경로 오지시 | AI 헛수고 (`Report/16`) | SSOT와 프롬프트 불일치 |
-| **REFACTOR 조기 착수** | RED 23건 잔존 | 단일 커밋 REFACTOR 시도·중단 | Phase 0 gate G-01~G-05 미적용 |
-| **False Green 위험** | cov 54%·entity 0% | “REFACTOR 가능” 오해 | NFR gate 미습관화 |
-| **문서·코드 SSOT 어긋남** | defect_list·README·pytest 불일치 | 옛 DEF ID 기준 지시 | 세션 후 문서 미동기화 |
-| **검색 비용** | Report 18·Prompt 22 | “지금 phase?” 재독 | 활성 SSOT 인덱스 부족 |
-| **AI 검증 습관** | Major 7건 미반영 프롬프트 | 리팩터 제안 조기 수용 | code-reviewer → To-Do 미연결 |
+**세션에 추가할 Keep:**  
+-  
+-  
 
 ---
 
-### Try — 시도해볼 것들
+### Problem — 문제점
 
-#### 진행 질문
+- RED → GREEN → 리팩터 단계 혼용
+- 테스트가 아직 실패하는데 리팩터를 너무 일찍 시작
+- 프롬프트 엔지니어링 부족 (목표·범위·완료 조건이 한꺼번에)
+- AI 제안 검증 능력 미흡 (바로 적용·되돌리기 반복)
+- 문서·코드·테스트 결과가 서로 안 맞음
+- 커버리지 목표 미달 (특히 도메인 쪽)
+- ECB 레이어 책임 혼재 (검증·화면·로직이 한곳에 몰림)
+- 공통 프롬프트·파일 경로 혼선 (다른 프로젝트 예시 섞임)
+- 보고서·기록이 많아서 “지금 어디까지 했지?” 찾기 어려움
 
-| # | 질문 |
-|---|------|
-| T1 | **다음에는 무엇을 다르게 해볼까?** (Problem 1건당 Try 1개 이상) |
-| T2 | **어떤 새로운 도구나 방법을 시도해볼까?** (템플릿·CI·에이전트·모드) |
-| T3 | **문제 해결을 위한 실험은?** (기간·측정·성공/실패 기준 포함) |
+**세션에 추가할 Problem:**  
+-  
+-  
 
-#### Try ↔ Problem 매핑 템플릿
+---
 
-| Problem (요약) | Try (실험) | 기간 | 성공 기준 | 실패 시 |
-|----------------|------------|------|-----------|---------|
-| Phase 미명시 | 세션 프롬프트 템플릿 의무화 | 2주 | PR 100% template 첨부 | 리뷰 반송 |
-| REFACTOR 조기 | G-01~G-05 gate PR 체크리스트 | 즉시 | RED≠0 REFACTOR PR 0건 | Wave 1 보류 |
-| | | | | |
+### Try — 시도해볼 것
 
-#### 프로젝트 사례 (Try 후보)
+- 테스트 단계(RED / GREEN / 리팩터)를 프롬프트 맨 위에 적기
+- AC·테스트 ID를 프롬프트에 명시하는 관행 강화
+- Golden Master approve(승인) 절차 문서화
+- 경계 테스트는 Mock만 사용, 실제 구현체 직접 연결 금지 철저
+- 상수·에러 메시지는 한곳에서 먼저 정의 (SSOT)
+- 리팩터 전 통과 조건 체크리스트 (Phase 0 Gate)
+- 팀 공통 프롬프트 템플릿 만들어서 공유
+- Ask 모드 = 코드 수정 없이 분석만, 규칙 문서화
+- 주 1회 짧은 프롬프트 회고 (Keep / Problem 각 1건)
+- 도메인·경계 커버리지를 나눠서 보기
 
-| Try | 다르게 할 것 | 새 도구·방법 | 실험·측정 |
-|-----|--------------|--------------|-----------|
-| **세션 템플릿** | Context / Must / Must NOT / Done when 고정 | `docs/prompt_session_template.md` | 2주간 PR template 첨부율 |
-| **Ask 모드 표준** | 분석만 시 `src/tests` 미수정 명시 | Cursor Ask + Report/17 형식 | 분석 세션 오염 0건 |
-| **15분 Prompt 리뷰** | 주 1회 Keep/Problem 1건 공유 | `docs/prompt_review_log.md` | 4회 연속 기록 |
-| **Dual-Track cov** | entity/boundary 분리 측정 | pytest-cov + gate 표 | REFACTOR 전 RF-01 판정 |
-| **활성 SSOT 인덱스** | README 상단 Report↔Prompt↔phase 표 | README 유지 | 신규 온보딩 1일 내 GREEN 1사이클 |
-| **Prompt/05 정리** | Magic Square 전용 또는 archive | `Prompt/_archive/` | 외부 예시 참조 0건 |
-| **짧은 턴 GREEN** | BV 1개·테스트 함수 1개·최소 diff | 기존 pytest | GREEN-P1 11건 순차 |
-
-#### 세션 프롬프트 템플릿 (Try — 즉시 적용용)
-
-```markdown
-## Context
-- SSOT: Report/02 §<section>, docs/test_plan.md
-- Branch: <name> | TDD phase: RED | GREEN | REFACTOR | Ask
-- Track: Domain | Boundary | Target IDs: <DT-/UT-/BV->
-
-## Must
-- Step 0: `pytest -q` → expect passed __, failed __
-
-## Must NOT
-- golden/ERROR 변경 무단 | RED>0 REFACTOR | UT→concrete solver
-
-## Done when
-- Command: `<pytest …>` | Result: `<N passed, M failed, exit __>`
-```
+**세션에 추가할 Try:**  
+-  
+-  
 
 ---
 
