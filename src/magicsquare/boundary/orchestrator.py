@@ -45,4 +45,9 @@ def process_grid_submission(
             code=_INVALID_SIZE_CODE,
             message=_INVALID_SIZE_MESSAGE,
         )
-    raise NotImplementedError("Size validation beyond row count is not implemented")
+    if any(len(row) != _GRID_SIZE for row in grid):
+        return ValidationFailureResult(
+            code=_INVALID_SIZE_CODE,
+            message=_INVALID_SIZE_MESSAGE,
+        )
+    raise NotImplementedError("Size validation beyond column count is not implemented")
