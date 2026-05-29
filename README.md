@@ -74,8 +74,9 @@ Magic_Square_XX/
 │   ├── test_plan.md          # AC-FR-01-01 테스트 계획 (TP-AC-FR-01-01)
 │   └── defect_list.md        # 결함 목록 DEF-001~009
 ├── src/magicsquare/
-│   ├── boundary/             # dto, ports, orchestrator, presenter, screen/
-│   └── entity/               # User 엔티티 (DT-USER-*)
+│   ├── boundary/             # dto, ports, orchestrator, presenter, screen/ (ui_boundary·input_validator 예정)
+│   ├── control/              # (예정) solve_partial_magic_square — use case
+│   └── entity/               # User (DT-USER-*); solver·Grid4x4 (예정)
 ├── tests/
 │   ├── boundary/             # AC-FR-01-01 RED 33건 + U-IN/U-OUT skeleton
 │   ├── entity/
@@ -100,6 +101,7 @@ Magic_Square_XX/
 | [12 … Phase 1 GREEN G-02~G-05](Report/12.Magic_Square_AC_FR_01_01_Phase1_GREEN_G02_G05_And_Transcript_Export_Report.md) | BV-02~04b GREEN · 33 passed DoD |
 | [13 … PyQt GUI · Demo](Report/13.Magic_Square_PyQt_GUI_And_Demo_Fix_And_Transcript_Export_Report.md) | PyQt6 Screen Layer · BV-04a/b 데모 정합 |
 | [14 … Golden Master](Report/14.Magic_Square_Golden_Master_And_Transcript_Export_Report.md) | Approval 회귀 · GM-TC-01~05 · baseline |
+| [15 … REFACTOR · ECB 분석](Report/15.Magic_Square_REFACTOR_ECB_Analysis_And_README_Update_Report.md) | 코드 리뷰 · ECB · 리팩토링 계획 · README |
 | [docs/test_plan.md](docs/test_plan.md) | AC-FR-01-01 pytest 범위·BV·커버리지 |
 | [docs/defect_list.md](docs/defect_list.md) | RED 실행 기반 결함 DEF-001~009 |
 | [Prompt/11 … RED QA Transcript](Prompt/11.Magic_Square_AC_FR_01_01_RED_QA_Interactive_Prompt_Transcript.md) | RED QA 세션 Export |
@@ -108,6 +110,7 @@ Magic_Square_XX/
 | [Prompt/16 … Phase 1 GREEN Transcript](Prompt/16.Magic_Square_AC_FR_01_01_Phase1_GREEN_G02_G05_Interactive_Prompt_Transcript.md) | G-02~G-05 GREEN · 33 passed Export |
 | [Prompt/17 … PyQt GUI Transcript](Prompt/17.Magic_Square_PyQt_GUI_And_Demo_Fix_Interactive_Prompt_Transcript.md) | PyQt6 GUI · Demo BV 정합 Export |
 | [Prompt/18 … Golden Master Transcript](Prompt/18.Magic_Square_Golden_Master_Interactive_Prompt_Transcript.md) | Golden Master · GM-TC Export |
+| [Prompt/19 … REFACTOR ECB Transcript](Prompt/19.Magic_Square_REFACTOR_ECB_Analysis_Interactive_Prompt_Transcript.md) | REFACTOR · ECB 분석 Export |
 
 ---
 
@@ -259,6 +262,88 @@ pytest -m golden_master -v
 - [ ] Domain L1~L3: 빈칸·누락·솔버 (D-LOC / D-MIS / D-SOL)
 - [ ] Integration IT-03: not-4×4 E2E
 
+### REFACTOR · ECB 분리 계획
+
+> **기준:** `.cursor/rules/magicsquare-tdd-testing.mdc` REFACTOR phase — 동작·계약(E001~E007, int[6], F-OK-01, ERROR 문자열) 불변, pytest GREEN, 커버리지 미감소.  
+> **순번 1~6:** GREEN 선행(신규 구현·테스트) · **순번 7~18:** GREEN 후 REFACTOR.
+
+#### 리팩토링 대상 목록 (우선순위 순)
+
+| 순번 | 대상 파일 | 문제 | 적용 기법 | 우선순위 |
+|------|-----------|------|-----------|----------|
+| 1 | `pyproject.toml` | pydantic이 `[dev]`/`[gui]`에만 있어 boundary DTO import 실패 | Dependency 정리 — core `dependencies` 이동 또는 stdlib 대체 | **P0 (선행)** |
+| 2 | `boundary/input_validator.py` *(신규)* | E002~E005 미구현; 검증이 orchestrator/grid_io/grid_panel에 3중 분산 | Extract Class — E001~E005 단일 SSOT | **P0** |
+| 3 | `boundary/ui_boundary.py` *(신규)* | U-OUT/U-FLOW facade 부재; Screen이 orchestrator 직접 호출 | Facade — validate→port→envelope; `NotImplementedError` 제거 | **P0** |
+| 4 | `boundary/presenter.py` | E001→`UI_ERR_NOT_4X4`·E006/E007 매핑 미구현 | Extract Method / SSOT constants | **P0** |
+| 5 | `control/solve_partial_magic_square.py` *(신규)* | Control layer 공백 | Use Case Extract — locate→find→solve 오케스트레이션만 | **P0** |
+| 6 | `entity/services/partial_grid_solver.py` *(신규)* | D-SOL RED; GM `reference.py`와 알고리즘 이중화 | Move Method — Step A/B·int[6]·judge를 Entity로 | **P0** |
+| 7 | `boundary/orchestrator.py` | 검증+DTO+`NotImplementedError` 혼재 | Facade 위임 후 역할 축소 또는 제거 | **P0 (REFACTOR)** |
+| 8 | `boundary/screen/main_window.py` | UI+submit+port stub+demo override; UI 비즈니스 판단(157–160, 170–172) | Thin Screen — `UIBoundary`·presenter만 | **P0 (REFACTOR)** |
+| 9 | `boundary/screen/grid_io.py` | parse+범위·size 검증 혼재 | Separate Concerns — parse만 유지 | **P1** |
+| 10 | `boundary/screen/grid_panel.py` | UI+size 검증+BV demo 주입 | Extract Method — 검증 제거 | **P1** |
+| 11 | `boundary/error_codes.py` *(신규)* | `INVALID_SIZE`/message가 conftest와 이중 SSOT | SSOT Module | **P1** |
+| 12 | `boundary/screen/demo_grids.py` | conftest와 fixture 3중 SSOT | Move Fixture → `tests/fixtures/` | **P1** |
+| 13 | `boundary/dto.py` | failure DTO만; success/pending 없음 | Introduce DTO | **P1** |
+| 14 | `boundary/ports.py` | `resolve` 반환 `Any` | Replace Type | **P2** |
+| 15 | `entity/user.py` | 데이터+검증 동시 (격자 AC와 무관) | 유지 또는 Extract Validator (선택) | **P2** |
+| 16 | `tests/golden_master/capture.py` | reference solver만 검증 (prod 미경유) | Adapter Switch — Entity GREEN 후 | **P1 (GREEN 후)** |
+| 17 | `boundary/orchestrator.py` | ValidationFailureResult 5회 중복·26줄 함수 | Extract Method | **P2** |
+| 18 | `boundary/screen/main_window.py` | `__init__`/`_on_submit` 20줄+ | Extract Method — UI 조립 분리 | **P2** |
+
+#### 테스트 선행 필요 항목
+
+리팩토링(구조 변경) 전 **RED→GREEN** 선행.
+
+| 레이어 | 함수/모듈 (목표) | 선행 테스트 |
+|--------|------------------|-------------|
+| Boundary | `InputValidator.validate` | `test_u_in_validation.py` U-IN-04~08 |
+| Boundary | `UIBoundary.solve` | `test_u_out_contract.py` U-OUT-01~03 |
+| Boundary | invalid → resolve 0회 | `test_u_flow_isolation.py` U-FLOW-02 |
+| Boundary | E001~E007 / `UI_ERR_*` 매핑 | *(신규)* `test_presenter.py` |
+| Boundary | size regression | `test_ac_fr_01_01_invalid_size.py` **33건 기대값 변경 금지** |
+| Entity | `MagicSquareJudge` | `test_d_val.py` D-VAL-01~06 |
+| Entity | `EmptyCellScanner` | `test_d_loc.py` D-LOC-01 |
+| Entity | `MissingValueFinder` | `test_d_mis.py` D-MIS-01 |
+| Entity | `PartialGridSolver` | `test_d_sol.py` D-SOL-01~04 |
+| Control | `SolvePartialMagicSquare.execute` | *(신규)* `tests/control/` 또는 IT-* |
+| Screen | parse/submit 분기 | `test_screen_grid_io.py` 확장 + GUI smoke(mock) |
+| Golden Master | baseline 고정 | `pytest -m golden_master` — `--approve` 없이 GREEN |
+
+#### REFACTOR 진입 체크리스트
+
+- [ ] **RF-01:** 대상 모듈 RED 0건 (REFACTOR 범위 RED 명시적 제외)
+- [ ] **RF-02:** AC-FR-01-01 **33/33** — code/message diff 없음
+- [ ] **RF-03:** `pytest -m golden_master` **6/6** — baseline 무변경
+- [ ] **RF-04:** boundary ≥85%, entity ≥95% **미감소**
+- [ ] **RF-05:** Green 작업과 Refactor **커밋/PR 분리**
+
+#### 리팩토링 후 검증
+
+**회귀 테스트**
+
+```bash
+python -m pytest tests/ -v
+python -m pytest tests/boundary/test_ac_fr_01_01_invalid_size.py -v
+python -m pytest -m boundary -v
+python -m pytest -m domain -v
+python -m pytest -m golden_master -v
+python -m pytest tests/ --cov=src/magicsquare/boundary --cov=src/magicsquare/entity --cov-report=term-missing
+```
+
+**외부 동작 불변 확인**
+
+| 항목 | Pass 기준 |
+|------|-----------|
+| E001 size 실패 | `INVALID_SIZE` + `"Grid must be 4x4."`; `resolve()` 0회 |
+| ERROR 문자열 | Report/02 `UI_ERR_*` / E001~E005 message 바이트 동일 (RG) |
+| int[6] 성공 | G1 `[2,2,7,3,3,10]`; len=6; 1-index; Domain vector verbatim |
+| Golden Master | diff 없음 (`--approve` 없이 GREEN) |
+| GUI smoke | BV-04a/b → INVALID_SIZE; valid 4×4 submit 동작 유지 |
+| ECB 의존 | `entity` → `boundary\|control\|data` import 없음; Screen → Entity/Control 직접 호출 없음 |
+| DT-USER | `test_entity_user.py` 9건 GREEN |
+
+**실행 순서:** P0 pydantic → P0 input_validator + ui_boundary + presenter GREEN → P0 Control + Entity GREEN → P0 Screen/orchestrator REFACTOR → P1 SSOT·fixture → P2 타입·함수 분리.
+
 ### 커버리지 목표
 
 - [ ] Boundary Layer: **≥ 85%** (`pytest --cov=src/magicsquare/boundary`)
@@ -292,9 +377,11 @@ pytest -m golden_master -v
 
 ## 권장 다음 단계
 
-1. **Phase 2 GREEN:** FR-01 skeleton (`test_u_in_validation.py` 등)  
-2. Report 02 **RG-01~06** 회귀 규칙 유지 (golden·assert 완화 금지)  
-3. REFACTOR는 AC-FR-01-01 전체 GREEN 후 별도 사이클  
+1. **P0 선행:** `pyproject.toml` pydantic core 의존성 정리  
+2. **Phase 2 GREEN:** U-IN/U-OUT/U-FLOW skeleton → `input_validator` + `ui_boundary`  
+3. **Phase 3 GREEN:** Entity D-VAL~D-SOL + Control `solve_partial_magic_square`  
+4. **REFACTOR:** [REFACTOR · ECB 분리 계획](#refactor--ecb-분리-계획) RF-01~05 충족 후 Screen/orchestrator 분리  
+5. Report 02 **RG-01~06** 회귀 규칙 유지 (golden·assert 완화 금지)  
 
 ---
 
@@ -304,4 +391,4 @@ pytest -m golden_master -v
 
 ---
 
-*최종 갱신: 2026-05-29 · AC-FR-01-01 GREEN G-01, Report 07~11, Prompt 11·14·15, docs/defect_list.md*
+*최종 갱신: 2026-05-29 · REFACTOR·ECB 분석 Report/15 · Prompt/19 · README REFACTOR 계획*
