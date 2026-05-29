@@ -74,7 +74,7 @@ Magic_Square_XX/
 │   ├── test_plan.md          # AC-FR-01-01 테스트 계획 (TP-AC-FR-01-01)
 │   └── defect_list.md        # 결함 목록 DEF-001~009
 ├── src/magicsquare/
-│   ├── boundary/             # GREEN 진행 중 (dto, ports, orchestrator)
+│   ├── boundary/             # dto, ports, orchestrator, presenter, screen/
 │   └── entity/               # User 엔티티 (DT-USER-*)
 ├── tests/
 │   ├── boundary/             # AC-FR-01-01 RED 33건 + U-IN/U-OUT skeleton
@@ -98,12 +98,14 @@ Magic_Square_XX/
 | [10 … AC-FR-01-01 GREEN](Report/10.Magic_Square_AC_FR_01_01_GREEN_And_Transcript_Export_Report.md) | BV-01 `grid=None` GREEN 1사이클 |
 | [11 … GREEN 로드맵 · README](Report/11.Magic_Square_GREEN_Roadmap_And_README_Update_Report.md) | G-01~G-05 커밋 계획 · To-Do 갱신 |
 | [12 … Phase 1 GREEN G-02~G-05](Report/12.Magic_Square_AC_FR_01_01_Phase1_GREEN_G02_G05_And_Transcript_Export_Report.md) | BV-02~04b GREEN · 33 passed DoD |
+| [13 … PyQt GUI · Demo](Report/13.Magic_Square_PyQt_GUI_And_Demo_Fix_And_Transcript_Export_Report.md) | PyQt6 Screen Layer · BV-04a/b 데모 정합 |
 | [docs/test_plan.md](docs/test_plan.md) | AC-FR-01-01 pytest 범위·BV·커버리지 |
 | [docs/defect_list.md](docs/defect_list.md) | RED 실행 기반 결함 DEF-001~009 |
 | [Prompt/11 … RED QA Transcript](Prompt/11.Magic_Square_AC_FR_01_01_RED_QA_Interactive_Prompt_Transcript.md) | RED QA 세션 Export |
 | [Prompt/14 … GREEN Transcript](Prompt/14.Magic_Square_AC_FR_01_01_GREEN_Interactive_Prompt_Transcript.md) | GREEN 1사이클 Export |
 | [Prompt/15 … 로드맵 Transcript](Prompt/15.Magic_Square_GREEN_Roadmap_And_README_Update_Interactive_Prompt_Transcript.md) | GREEN 로드맵 · README 갱신 Export |
 | [Prompt/16 … Phase 1 GREEN Transcript](Prompt/16.Magic_Square_AC_FR_01_01_Phase1_GREEN_G02_G05_Interactive_Prompt_Transcript.md) | G-02~G-05 GREEN · 33 passed Export |
+| [Prompt/17 … PyQt GUI Transcript](Prompt/17.Magic_Square_PyQt_GUI_And_Demo_Fix_Interactive_Prompt_Transcript.md) | PyQt6 GUI · Demo BV 정합 Export |
 
 ---
 
@@ -115,7 +117,7 @@ Magic_Square_XX/
 | TDD · Dual-Track · Clean Architecture 설계 | ✅ 완료 (Report 02) |
 | AC-FR-01-01 RED 테스트 | ✅ 33건 수집 (`test_ac_fr_01_01_invalid_size.py`) |
 | AC-FR-01-01 GREEN (Boundary) | ✅ **33 / 33 passed** — Phase 1 완료 |
-| Boundary 스켈레ton | ✅ `dto`, `ports`, `orchestrator` (최소) |
+| Boundary 스켈레ton | ✅ `dto`, `ports`, `orchestrator`, `presenter`, PyQt `screen/` |
 | Domain 솔버 · Control | ❌ 미착수 |
 | Entity User (DT-USER-*) | ✅ 9 passed |
 
@@ -134,6 +136,11 @@ Magic_Square_XX/
 python -m venv .venv
 .venv\Scripts\activate          # Windows
 pip install -e ".[dev]"
+
+# PyQt GUI (선택)
+pip install -e ".[gui]"
+python -m magicsquare.boundary.screen
+# 또는: magicsquare-gui
 
 # AC-FR-01-01 전체
 pytest tests/boundary/test_ac_fr_01_01_invalid_size.py -v
