@@ -22,11 +22,16 @@ def process_grid_submission(
         solver_port: Domain solver port; not invoked when validation fails.
 
     Returns:
-        ``ValidationFailureResult`` when ``grid`` is ``None``; otherwise pending.
+        ``ValidationFailureResult`` when ``grid`` is ``None`` or ``[]``; otherwise pending.
     """
     if grid is None:
         return ValidationFailureResult(
             code=_INVALID_SIZE_CODE,
             message=_INVALID_SIZE_MESSAGE,
         )
-    raise NotImplementedError("Size validation beyond None is not implemented")
+    if len(grid) == 0:
+        return ValidationFailureResult(
+            code=_INVALID_SIZE_CODE,
+            message=_INVALID_SIZE_MESSAGE,
+        )
+    raise NotImplementedError("Size validation beyond empty list is not implemented")
