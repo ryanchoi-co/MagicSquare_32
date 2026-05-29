@@ -97,11 +97,13 @@ Magic_Square_XX/
 | [09 … RED Skeleton](Report/09.Magic_Square_FR01_FR05_RED_Skeleton_And_Transcript_Export_Report.md) | Boundary/Domain skeleton 23건 |
 | [10 … AC-FR-01-01 GREEN](Report/10.Magic_Square_AC_FR_01_01_GREEN_And_Transcript_Export_Report.md) | BV-01 `grid=None` GREEN 1사이클 |
 | [11 … GREEN 로드맵 · README](Report/11.Magic_Square_GREEN_Roadmap_And_README_Update_Report.md) | G-01~G-05 커밋 계획 · To-Do 갱신 |
+| [12 … Phase 1 GREEN G-02~G-05](Report/12.Magic_Square_AC_FR_01_01_Phase1_GREEN_G02_G05_And_Transcript_Export_Report.md) | BV-02~04b GREEN · 33 passed DoD |
 | [docs/test_plan.md](docs/test_plan.md) | AC-FR-01-01 pytest 범위·BV·커버리지 |
 | [docs/defect_list.md](docs/defect_list.md) | RED 실행 기반 결함 DEF-001~009 |
 | [Prompt/11 … RED QA Transcript](Prompt/11.Magic_Square_AC_FR_01_01_RED_QA_Interactive_Prompt_Transcript.md) | RED QA 세션 Export |
 | [Prompt/14 … GREEN Transcript](Prompt/14.Magic_Square_AC_FR_01_01_GREEN_Interactive_Prompt_Transcript.md) | GREEN 1사이클 Export |
 | [Prompt/15 … 로드맵 Transcript](Prompt/15.Magic_Square_GREEN_Roadmap_And_README_Update_Interactive_Prompt_Transcript.md) | GREEN 로드맵 · README 갱신 Export |
+| [Prompt/16 … Phase 1 GREEN Transcript](Prompt/16.Magic_Square_AC_FR_01_01_Phase1_GREEN_G02_G05_Interactive_Prompt_Transcript.md) | G-02~G-05 GREEN · 33 passed Export |
 
 ---
 
