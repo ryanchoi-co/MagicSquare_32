@@ -147,7 +147,7 @@ Magic_Square_XX/
 - [ ] 전체 TOTAL: 90%+
 
 ### 결함 목록 연결
-- [x] [defect_list.md](defect_list.md) 생성 및 발견 결함 기록 (DEF-001~009, 2026-05-29)
+- [x] [defect_list.md](docs/defect_list.md) 생성 및 발견 결함 기록 (DEF-001~009, 2026-05-29)
 - [ ] 모든 결함 수정 후 회귀 테스트 통과 확인
 
 ---
