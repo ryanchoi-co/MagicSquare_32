@@ -7,7 +7,7 @@
 | **작성 역할** | QA 리드 |
 | **기준 AC** | AC-FR-01-01 |
 | **관련 테스트** | `tests/boundary/test_ac_fr_01_01_invalid_size.py` |
-| **관련 계획** | [docs/test_plan.md](docs/test_plan.md) |
+| **관련 계획** | [test_plan.md](test_plan.md) |
 
 ---
 
@@ -33,7 +33,7 @@
 | DEF-004 | Critical | AC-FR-01-01 | `grid=None` / `grid=[]` / `grid=3×4` 등 BV-01~04 입력 | 각 입력마다 `code="INVALID_SIZE"`, `message="Grid must be 4x4."` | `magicsquare.boundary.orchestrator` 없음 → S2 입력 검증·S3 분기 없음 | `process_grid_submission` 및 크기 선행 검증 로직 미구현 | `orchestrator.py`: `raw is None`, `len(rows)!=4`, `len(cols)!=4` → `ValidationFailureResult`; 유효 시에만 `resolve()` |
 | DEF-005 | High | AC-FR-01-01 | `grid=[[]]*4` (행 4, 열 0) 제출 | `INVALID_SIZE` / `UI_ERR_NOT_4X4` 동등 실패 | DEF-004와 동일 — orchestrator 없음 | 열 길이 4 검사 누락(구현체 없음) | DEF-004 구현 시 `any(len(row) != 4 for row in raw)` 분기 포함 |
 | DEF-006 | High | AC-FR-01-01 | `grid` = 3×4 (`UT-01` 정본 픽스처) 제출 | `code="INVALID_SIZE"` | DEF-004와 동일 | 3행 격자 거부 분기 없음 | `len(raw) != 4` 시 즉시 실패 반환 |
-| DEF-007 | Medium | AC-FR-01-01 | `pytest --cov=src/magicsquare/boundary --cov-report=html` | Boundary branch **≥ 85%** ([docs/test_plan.md](docs/test_plan.md) §6) | 측정 대상 패키지 없음 → **0%** (또는 N/A) | Boundary 소스 미존재 | DEF-001~004 해결 후 AC-FR-01-01 스위트로 커버리지 재측정 |
+| DEF-007 | Medium | AC-FR-01-01 | `pytest --cov=src/magicsquare/boundary --cov-report=html` | Boundary branch **≥ 85%** ([test_plan.md](test_plan.md) §6) | 측정 대상 패키지 없음 → **0%** (또는 N/A) | Boundary 소스 미존재 | DEF-001~004 해결 후 AC-FR-01-01 스위트로 커버리지 재측정 |
 | DEF-008 | Medium | AC-FR-01-01 | Report/02 §2.2 UX-02 대비 message 필드 검증 | 테스트 플랜: `Grid must be 4x4.` / Report SSOT: `ERROR: grid must be 4x4` | 구현 전 — Presenter·ERROR 접두 매핑 미결정 | 외부 문자열 계약(접두 `ERROR: `) vs DTO `message` 필드 정책 미고정 | GREEN 전 Presenter에서 SSOT 문자열 **완전 일치**로 매핑 문서·코드 고정 (RG-03) |
 | DEF-009 | Low | AC-FR-01-01 | `TestAcFr0101ScopeLimit` 3건 catalog 테스트만 실행 | RED 단계에서도 동작 검증 실패 기대 | **PASSED** (카탈로그 상수만 검사) | 동작 미검증 정적 테스트 — RED 신호 약화 | 유지 가능; 동작 결함은 DEF-001~004로 추적. 필요 시 `@pytest.mark.skip` 없이 orchestrator 연동 테스트로 보강 |
 
