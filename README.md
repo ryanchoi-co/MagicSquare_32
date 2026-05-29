@@ -103,6 +103,7 @@ Magic_Square_XX/
 | [14 … Golden Master](Report/14.Magic_Square_Golden_Master_And_Transcript_Export_Report.md) | Approval 회귀 · GM-TC-01~05 · baseline |
 | [15 … REFACTOR · ECB 분석](Report/15.Magic_Square_REFACTOR_ECB_Analysis_And_README_Update_Report.md) | 코드 리뷰 · ECB · 리팩토링 계획 · README |
 | [16 … REFACTOR 프로그램 · Phase 0](Report/16.Magic_Square_REFACTOR_Program_Phase0_And_README_3Group_ToDo_Report.md) | 3그룹 To-Do · Phase 0 게이트 · Wave 로드맵 |
+| [17 … QA 커버리지 · Dual-Track](Report/17.Magic_Square_QA_Coverage_DualTrack_And_Transcript_Export_Report.md) | Step 0 기준선 · NFR gate · pytest-cov 측정 |
 | [docs/test_plan.md](docs/test_plan.md) | AC-FR-01-01 pytest 범위·BV·커버리지 |
 | [docs/defect_list.md](docs/defect_list.md) | RED 실행 기반 결함 DEF-001~009 |
 | [Prompt/11 … RED QA Transcript](Prompt/11.Magic_Square_AC_FR_01_01_RED_QA_Interactive_Prompt_Transcript.md) | RED QA 세션 Export |
@@ -113,6 +114,7 @@ Magic_Square_XX/
 | [Prompt/18 … Golden Master Transcript](Prompt/18.Magic_Square_Golden_Master_Interactive_Prompt_Transcript.md) | Golden Master · GM-TC Export |
 | [Prompt/19 … REFACTOR ECB Transcript](Prompt/19.Magic_Square_REFACTOR_ECB_Analysis_Interactive_Prompt_Transcript.md) | REFACTOR · ECB 분석 Export |
 | [Prompt/20 … REFACTOR 프로그램 Transcript](Prompt/20.Magic_Square_REFACTOR_Program_And_3Group_ToDo_Interactive_Prompt_Transcript.md) | 3그룹 To-Do · Phase 0 · Wave 로드맵 Export |
+| [Prompt/21 … QA 커버리지 Transcript](Prompt/21.Magic_Square_QA_Coverage_DualTrack_Interactive_Prompt_Transcript.md) | Dual-Track cov · NFR gate · Ask mode Export |
 
 ---
 
@@ -404,4 +406,4 @@ python -m pytest tests/ --cov=src/magicsquare/boundary --cov=src/magicsquare/ent
 
 ---
 
-*최종 갱신: 2026-05-29 · REFACTOR·ECB 3그룹 To-Do · Report/15 · Prompt/19*
+*최종 갱신: 2026-05-29 · QA Dual-Track cov · Report/17 · Prompt/21*
