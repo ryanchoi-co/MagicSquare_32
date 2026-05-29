@@ -71,8 +71,9 @@ Magic_Square_XX/
 ├── README.md
 ├── pyproject.toml
 ├── docs/
-│   ├── test_plan.md          # AC-FR-01-01 테스트 계획 (TP-AC-FR-01-01)
-│   └── defect_list.md        # 결함 목록 DEF-001~009
+│   ├── test_plan.md                  # AC-FR-01-01 테스트 계획 (TP-AC-FR-01-01)
+│   ├── defect_list.md                # 결함 목록 DEF-001~009
+│   └── Prompting_BP_Retrospective.md # Prompting BP 회고 (Keep/Problem/Try·팀 액션)
 ├── src/magicsquare/
 │   ├── boundary/             # dto, ports, orchestrator, presenter, screen/ (ui_boundary·input_validator 예정)
 │   ├── control/              # (예정) solve_partial_magic_square — use case
@@ -104,8 +105,10 @@ Magic_Square_XX/
 | [15 … REFACTOR · ECB 분석](Report/15.Magic_Square_REFACTOR_ECB_Analysis_And_README_Update_Report.md) | 코드 리뷰 · ECB · 리팩토링 계획 · README |
 | [16 … REFACTOR 프로그램 · Phase 0](Report/16.Magic_Square_REFACTOR_Program_Phase0_And_README_3Group_ToDo_Report.md) | 3그룹 To-Do · Phase 0 게이트 · Wave 로드맵 |
 | [17 … QA 커버리지 · Dual-Track](Report/17.Magic_Square_QA_Coverage_DualTrack_And_Transcript_Export_Report.md) | Step 0 기준선 · NFR gate · pytest-cov 측정 |
+| [18 … Session Summary REFACTOR·QA](Report/18.Magic_Square_Session_Summary_REFACTOR_QA_Report.md) | Report/15~17 통합 요약 · 다음 단계 |
 | [docs/test_plan.md](docs/test_plan.md) | AC-FR-01-01 pytest 범위·BV·커버리지 |
 | [docs/defect_list.md](docs/defect_list.md) | RED 실행 기반 결함 DEF-001~009 |
+| [**Prompting BP 회고**](docs/Prompting_BP_Retrospective.md) | Keep/Problem/Try · 학습 성과 · 팀 액션 · 현업 적용 (제출용) |
 | [Prompt/11 … RED QA Transcript](Prompt/11.Magic_Square_AC_FR_01_01_RED_QA_Interactive_Prompt_Transcript.md) | RED QA 세션 Export |
 | [Prompt/14 … GREEN Transcript](Prompt/14.Magic_Square_AC_FR_01_01_GREEN_Interactive_Prompt_Transcript.md) | GREEN 1사이클 Export |
 | [Prompt/15 … 로드맵 Transcript](Prompt/15.Magic_Square_GREEN_Roadmap_And_README_Update_Interactive_Prompt_Transcript.md) | GREEN 로드맵 · README 갱신 Export |
@@ -115,6 +118,7 @@ Magic_Square_XX/
 | [Prompt/19 … REFACTOR ECB Transcript](Prompt/19.Magic_Square_REFACTOR_ECB_Analysis_Interactive_Prompt_Transcript.md) | REFACTOR · ECB 분석 Export |
 | [Prompt/20 … REFACTOR 프로그램 Transcript](Prompt/20.Magic_Square_REFACTOR_Program_And_3Group_ToDo_Interactive_Prompt_Transcript.md) | 3그룹 To-Do · Phase 0 · Wave 로드맵 Export |
 | [Prompt/21 … QA 커버리지 Transcript](Prompt/21.Magic_Square_QA_Coverage_DualTrack_Interactive_Prompt_Transcript.md) | Dual-Track cov · NFR gate · Ask mode Export |
+| [Prompt/22 … Session Summary Transcript](Prompt/22.Magic_Square_Session_Summary_REFACTOR_QA_Prompt_Transcript.md) | REFACTOR·QA 세션 요약 Export |
 
 ---
 
