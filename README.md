@@ -112,7 +112,7 @@ Magic_Square_XX/
 | 문제 인식 · Why · 진짜 문제 정의 | ✅ 완료 (Report 01) |
 | TDD · Dual-Track · Clean Architecture 설계 | ✅ 완료 (Report 02) |
 | AC-FR-01-01 RED 테스트 | ✅ 33건 수집 (`test_ac_fr_01_01_invalid_size.py`) |
-| AC-FR-01-01 GREEN (Boundary) | 🔄 **21 / 33 passed** — BV-01~02(`None`, `[]`) 구현 |
+| AC-FR-01-01 GREEN (Boundary) | 🔄 **25 / 33 passed** — BV-01~03 구현 |
 | Boundary 스켈레ton | ✅ `dto`, `ports`, `orchestrator` (최소) |
 | Domain 솔버 · Control | ❌ 미착수 |
 | Entity User (DT-USER-*) | ✅ 9 passed |
@@ -121,7 +121,7 @@ Magic_Square_XX/
 
 ```bash
 .venv\Scripts\python.exe -m pytest tests/boundary/test_ac_fr_01_01_invalid_size.py -q
-# 21 passed, 12 failed  (BV-03~04b 대기)
+# 25 passed, 8 failed  (BV-04a~04b 대기)
 ```
 
 ---
@@ -166,7 +166,7 @@ pytest --cov=src/magicsquare/boundary --cov-report=html
 |------|-----|------|-----------|---------------|-------|
 | **G-01** | BV-01 | `None` | `grid is None` | `test_none_grid_returns_invalid_size_code` | [x] |
 | **G-02** | BV-02 | `[]` | `len(grid) == 0` | `test_empty_list_returns_invalid_size_code` | [x] |
-| **G-03** | BV-03 | `[[]]*4` | `any(len(row) != 4 …)` | `test_four_empty_rows_returns_invalid_size_code` | [ ] |
+| **G-03** | BV-03 | `[[]]*4` | `any(len(row) == 0 …)` | `test_four_empty_rows_returns_invalid_size_code` | [x] |
 | **G-04** | BV-04a | 3×4 | `len(grid) != 4` | `test_3x4_grid_returns_invalid_size_code` | [ ] |
 | **G-05** | BV-04b | 4×3 | (열 길이 검사) | `test_4x3_grid_returns_invalid_size_code` | [ ] |
 
@@ -185,7 +185,12 @@ pytest --cov=src/magicsquare/boundary --cov-report=html
 - [x] `grid=[]` 시 `resolve()` 0회 (mock)
 - [x] `grid=[]` message 문자 단위 일치
 
-**G-03~G-05 대기**
+**G-03 완료 시 추가 통과**
+
+- [x] `grid=[[]]*4` → `INVALID_SIZE`
+- [x] `grid=[[]]*4` 시 `resolve()` 0회 (mock)
+
+**G-04~G-05 대기**
 
 - [ ] TC-A-06: `grid=3×4` / `4×3` → `INVALID_SIZE`
 - [ ] AC-FR-01-01 스위트 **33 passed** (DoD)
@@ -219,7 +224,7 @@ pytest --cov=src/magicsquare/boundary --cov-report=html
 - [x] DEF-001: `magicsquare.boundary` 패키지 생성
 - [x] DEF-002: `ValidationFailureResult` DTO
 - [x] DEF-003: `DomainSolverPort` + `resolve()`
-- [ ] DEF-004: orchestrator size 검증 전체 (현재 `None`, `[]`)
+- [ ] DEF-004: orchestrator size 검증 전체 (현재 `None`, `[]`, 빈 행)
 - [ ] DEF-005~006: 열 길이 / 3×4 분기
 - [ ] DEF-007: Boundary 커버리지 ≥ 85% 재측정
 - [ ] DEF-008: Presenter·ERROR 문자열 RG-03 정합
@@ -240,8 +245,8 @@ pytest --cov=src/magicsquare/boundary --cov-report=html
 
 ## 권장 다음 단계
 
-1. **G-03 GREEN:** `grid=[[]]*4` → `INVALID_SIZE` (커밋 1건, 3 테스트 추가 통과)  
-2. **G-04~G-05:** 3×4, 4×3 순 — AC-FR-01-01 **33 passed**  
+1. **G-04 GREEN:** 3×4 → `INVALID_SIZE` (커밋 1건)  
+2. **G-05 GREEN:** 4×3 → AC-FR-01-01 **33 passed**  
 3. Report 02 **RG-01~06** 회귀 규칙 유지 (golden·assert 완화 금지)  
 4. REFACTOR는 AC-FR-01-01 전체 GREEN 후 별도 사이클  
 

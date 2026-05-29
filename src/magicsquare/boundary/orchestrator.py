@@ -9,6 +9,7 @@ from magicsquare.boundary.ports import DomainSolverPort
 
 _INVALID_SIZE_CODE = "INVALID_SIZE"
 _INVALID_SIZE_MESSAGE = "Grid must be 4x4."
+_GRID_SIZE = 4
 
 
 def process_grid_submission(
@@ -22,7 +23,7 @@ def process_grid_submission(
         solver_port: Domain solver port; not invoked when validation fails.
 
     Returns:
-        ``ValidationFailureResult`` when ``grid`` is ``None`` or ``[]``; otherwise pending.
+        ``ValidationFailureResult`` when size preconditions fail; otherwise pending.
     """
     if grid is None:
         return ValidationFailureResult(
@@ -34,4 +35,9 @@ def process_grid_submission(
             code=_INVALID_SIZE_CODE,
             message=_INVALID_SIZE_MESSAGE,
         )
-    raise NotImplementedError("Size validation beyond empty list is not implemented")
+    if any(len(row) == 0 for row in grid):
+        return ValidationFailureResult(
+            code=_INVALID_SIZE_CODE,
+            message=_INVALID_SIZE_MESSAGE,
+        )
+    raise NotImplementedError("Size validation beyond empty rows is not implemented")
