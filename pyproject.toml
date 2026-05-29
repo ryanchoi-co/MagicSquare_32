@@ -27,6 +27,7 @@ markers = [
     "boundary: Boundary layer contract tests (UT-*)",
     "domain: Domain layer tests (DT-*)",
     "integration: Integration tests (IT-*)",
+    "golden_master: Golden Master / Approval regression (GM-TC-*)",
 ]
 
 [tool.black]

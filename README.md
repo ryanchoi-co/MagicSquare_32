@@ -99,6 +99,7 @@ Magic_Square_XX/
 | [11 … GREEN 로드맵 · README](Report/11.Magic_Square_GREEN_Roadmap_And_README_Update_Report.md) | G-01~G-05 커밋 계획 · To-Do 갱신 |
 | [12 … Phase 1 GREEN G-02~G-05](Report/12.Magic_Square_AC_FR_01_01_Phase1_GREEN_G02_G05_And_Transcript_Export_Report.md) | BV-02~04b GREEN · 33 passed DoD |
 | [13 … PyQt GUI · Demo](Report/13.Magic_Square_PyQt_GUI_And_Demo_Fix_And_Transcript_Export_Report.md) | PyQt6 Screen Layer · BV-04a/b 데모 정합 |
+| [14 … Golden Master](Report/14.Magic_Square_Golden_Master_And_Transcript_Export_Report.md) | Approval 회귀 · GM-TC-01~05 · baseline |
 | [docs/test_plan.md](docs/test_plan.md) | AC-FR-01-01 pytest 범위·BV·커버리지 |
 | [docs/defect_list.md](docs/defect_list.md) | RED 실행 기반 결함 DEF-001~009 |
 | [Prompt/11 … RED QA Transcript](Prompt/11.Magic_Square_AC_FR_01_01_RED_QA_Interactive_Prompt_Transcript.md) | RED QA 세션 Export |
@@ -106,6 +107,7 @@ Magic_Square_XX/
 | [Prompt/15 … 로드맵 Transcript](Prompt/15.Magic_Square_GREEN_Roadmap_And_README_Update_Interactive_Prompt_Transcript.md) | GREEN 로드맵 · README 갱신 Export |
 | [Prompt/16 … Phase 1 GREEN Transcript](Prompt/16.Magic_Square_AC_FR_01_01_Phase1_GREEN_G02_G05_Interactive_Prompt_Transcript.md) | G-02~G-05 GREEN · 33 passed Export |
 | [Prompt/17 … PyQt GUI Transcript](Prompt/17.Magic_Square_PyQt_GUI_And_Demo_Fix_Interactive_Prompt_Transcript.md) | PyQt6 GUI · Demo BV 정합 Export |
+| [Prompt/18 … Golden Master Transcript](Prompt/18.Magic_Square_Golden_Master_Interactive_Prompt_Transcript.md) | Golden Master · GM-TC Export |
 
 ---
 
@@ -168,6 +170,36 @@ pytest --cov=src/magicsquare/boundary --cov-report=html
 | R-1 | FR-01~05 Boundary skeleton 11건 | [x] |
 | R-2 | Domain `test_d_*` / `Grid4x4.fromRaw` RED | [ ] |
 | R-3 | Integration IT-03 RED | [ ] |
+
+### Golden Master 회귀 안전장치
+
+> Refactoring 시작 전 구축. GREEN 완료 후 즉시 적용.
+
+#### 기준 파일 생성
+
+- [x] **GM-01:** `golden_master_expected.txt` 생성
+- [x] **GM-02:** 정상/역순/오류 시나리오 추가
+- [x] **GM-03:** `git add tests/golden_master_expected.txt`
+
+#### 테스트 코드
+
+- [x] **GM-04:** `test_golden_master_magic_square` 작성
+- [x] **GM-05:** approve 패턴 적용
+- [x] **GM-06:** Golden Master 테스트 PASS 확인
+
+```bash
+pytest -m golden_master -v
+# 6 passed
+```
+
+#### 회귀 보호
+
+- [x] **GM-07:** row-major 규칙 보호
+- [x] **GM-08:** 1-index 출력 보호
+- [x] **GM-09:** reverse 조합 fallback 보호
+- [x] **GM-10:** Error Contract 보호
+
+> 설계: [docs/golden_master_approve_design.md](docs/golden_master_approve_design.md)
 
 ### Phase 1 — GREEN · AC-FR-01-01 (Boundary, BV 오름차순)
 
