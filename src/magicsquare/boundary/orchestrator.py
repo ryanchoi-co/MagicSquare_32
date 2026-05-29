@@ -35,9 +35,14 @@ def process_grid_submission(
             code=_INVALID_SIZE_CODE,
             message=_INVALID_SIZE_MESSAGE,
         )
+    if len(grid) != _GRID_SIZE:
+        return ValidationFailureResult(
+            code=_INVALID_SIZE_CODE,
+            message=_INVALID_SIZE_MESSAGE,
+        )
     if any(len(row) == 0 for row in grid):
         return ValidationFailureResult(
             code=_INVALID_SIZE_CODE,
             message=_INVALID_SIZE_MESSAGE,
         )
-    raise NotImplementedError("Size validation beyond empty rows is not implemented")
+    raise NotImplementedError("Size validation beyond row count is not implemented")
